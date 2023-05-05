@@ -1,0 +1,51 @@
+---
+- name: Create easyrsa dir
+  ansible.builtin.command: make-cadir {{ openvpn_path_easyrsa }}
+  args:
+    creates: "{{ openvpn_path_easyrsa }}"
+
+- name: Intialize PKI
+  ansible.builtin.command: "{{ openvpn_path_easyrsa }}/easyrsa init-pki"
+  args:
+    chdir: "{{ openvpn_path }}"
+    creates: "{{ openvpn_path }}/pki/"
+
+- name: Build CA
+  ansible.builtin.command: "{{ openvpn_path_easyrsa }}/easyrsa build-ca nopass"
+  args:
+    chdir: "{{ openvpn_path }}"
+    creates: "{{ openvpn_path }}/pki/ca.crt"
+  environment:
+    EASYRSA_BATCH: "yes"
+    EASYRSA_ALGO: "ec"
+    EASYRSA_DIGEST: "sha512"
+    EASYRSA_REQ_COUNTRY: "{{ openvpn_key_country }}"
+    EASYRSA_REQ_PROVINCE: "{{ openvpn_key_province }}"
+    EASYRSA_REQ_CITY: "{{ openvpn_key_city }}"
+    EASYRSA_REQ_ORG: "{{ openvpn_key_org }}"
+    EASYRSA_REQ_CN: "{{ openvpn_key_server_cn }}"
+    EASYRSA_REQ_EMAIL: "{{ openvpn_key_email }}"
+    EASYRSA_REQ_OU: "{{ openvpn_key_ou }}"
+
+- name: Build CRL
+  ansible.builtin.command: "{{ openvpn_path_easyrsa }}/easyrsa gen-crl"
+  args:
+    chdir: "{{ openvpn_path }}"
+    creates: "{{ openvpn_path }}/pki/crl.pem"
+
+- name: Add server
+  ansible.builtin.command: "{{ openvpn_path_easyrsa }}/easyrsa build-server-full server nopass"
+  args:
+    chdir: "{{ openvpn_path }}"
+    creates: "{{ openvpn_path }}/pki/issued/server.crt"
+
+- name: Build ta.key
+  ansible.builtin.command: openvpn --genkey --secret "{{ openvpn_path }}/pki/ta.key"
+  args:
+    creates: "{{ openvpn_path }}/pki/ta.key"
+
+- name: Build dh.pem
+  ansible.builtin.command: "{{ openvpn_path_easyrsa }}/easyrsa gen-dh"
+  args:
+    chdir: "{{ openvpn_path }}"
+    creates: "{{ openvpn_path }}/pki/dh.pem"

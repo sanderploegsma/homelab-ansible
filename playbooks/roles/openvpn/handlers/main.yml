@@ -1,0 +1,7 @@
+---
+- name: Restart openvpn
+  ansible.builtin.service:
+    name: openvpn@server.service
+    state: restarted
+  when:
+    - not ansible_check_mode | bool

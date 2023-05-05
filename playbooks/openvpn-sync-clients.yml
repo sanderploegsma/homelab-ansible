@@ -1,0 +1,13 @@
+---
+- name: Sync OpenVPN clients
+  hosts: "{{ cmd_hosts | default('openvpn') }}"
+  gather_facts: true
+  become: true
+  tasks:
+    - name: Create clients
+      ansible.builtin.include_role:
+        name: openvpn
+        tasks_from: add_client
+      vars:
+        openvpn_client: "{{ item }}"
+      loop: "{{ openvpn_clients }}"
