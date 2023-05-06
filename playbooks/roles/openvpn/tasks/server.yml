@@ -3,7 +3,7 @@
   ansible.builtin.copy:
     src: "{{ openvpn_path }}/pki/{{ item }}"
     dest: /etc/openvpn/server/{{ item | basename }}
-    mode: 0640
+    mode: "0640"
     remote_src: true
   loop:
     - ca.crt
@@ -26,7 +26,7 @@
     dest: "/etc/rc.local"
     owner: root
     group: root
-    mode: 0755
+    mode: "0755"
 
 - name: Run rc.local once
   ansible.builtin.command: /etc/rc.local
@@ -38,7 +38,7 @@
     dest: "{{ openvpn_path }}/server.conf"
     owner: root
     group: nogroup
-    mode: 0640
+    mode: "0640"
   notify:
     - Restart openvpn
 
