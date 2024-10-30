@@ -1,7 +1,0 @@
----
-- name: Install OpenVPN
-  hosts: "{{ cmd_hosts | default('openvpn') }}"
-  gather_facts: true
-  become: true
-  roles:
-    - openvpn

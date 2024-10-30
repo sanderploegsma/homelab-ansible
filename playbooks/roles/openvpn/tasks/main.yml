@@ -1,7 +1,0 @@
----
-- name: Install packages
-  ansible.builtin.include_tasks: packages.yml
-- name: Set up PKI
-  ansible.builtin.include_tasks: pki.yml
-- name: Set up server
-  ansible.builtin.include_tasks: server.yml

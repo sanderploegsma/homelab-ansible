@@ -1,0 +1,5 @@
+---
+- name: Install Prometheus node exporter
+  hosts: node_exporter
+  roles:
+    - prometheus.prometheus.node_exporter

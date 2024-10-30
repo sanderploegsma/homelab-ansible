@@ -1,0 +1,5 @@
+[all]
+plex ansible_host=plex.home ansible_user=sander
+
+[node_exporter]
+plex
