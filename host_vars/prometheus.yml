@@ -11,6 +11,7 @@ prometheus_scrape_configs:
         - "{{ hostvars['plex']['ansible_host'] }}:9100"
         - "{{ hostvars['grafana']['ansible_host'] }}:9100"
         - "{{ hostvars['prometheus']['ansible_host'] }}:9100"
+        - "{{ hostvars['tower']['ansible_host'] }}:9100"
   - job_name: homeassistant
     metrics_path: /api/prometheus
     bearer_token: "{{ homeassistant_token | mandatory }}"
