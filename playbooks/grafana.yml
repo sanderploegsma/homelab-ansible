@@ -1,0 +1,75 @@
+---
+- name: Install Grafana Server
+  hosts: grafana
+  tasks:
+    - name: Download GPG key
+      ansible.builtin.get_url:
+        url: https://apt.grafana.com/gpg.key
+        dest: /etc/apt/keyrings/grafana.asc
+        mode: "0644"
+        force: true
+
+    - name: Add apt repository
+      ansible.builtin.copy:
+        dest: /etc/apt/sources.list.d/grafana.list
+        content: deb [signed-by=/etc/apt/keyrings/grafana.asc] https://apt.grafana.com stable main
+        mode: "0644"
+
+    - name: Install grafana-server
+      ansible.builtin.apt:
+        name: grafana
+        update_cache: true
+      notify: Restart grafana-server
+
+    - name: Configure Grafana
+      ansible.builtin.copy:
+        content: |
+          [paths]
+          data = /var/lib/grafana
+          logs = /var/log/grafana
+          plugins = /var/lib/grafana/plugins
+          provisioning = /etc/grafana/provisioning
+
+          [auth.anonymous]
+          enabled = true
+          org_role = Admin
+          org_name = Main Org.
+
+          [server]
+          http_port = {{ grafana_http_port | default(3000) }}
+          domain = {{ ansible_fqdn | default(ansible_host) | default('localhost') }}
+          root_url = %(protocol)s://%(domain)s:%(http_port)s/
+
+          [database]
+          type = sqlite3
+        dest: /etc/grafana/grafana.ini
+        mode: "0644"
+        owner: grafana
+        group: grafana
+      notify: Restart grafana-server
+
+    - name: Configure datasources
+      ansible.builtin.copy:
+        content: |
+          apiVersion: 1
+
+          datasources:
+            - name: Prometheus
+              type: prometheus
+              access: proxy
+              url: http://{{ hostvars['prometheus']['ansible_host'] }}:9090
+              isDefault: true
+              editable: false
+        dest: /etc/grafana/provisioning/datasources/ansible-managed.yaml
+        mode: "0644"
+        owner: grafana
+        group: grafana
+      notify: Restart grafana-server
+
+  handlers:
+    - name: Restart grafana-server
+      ansible.builtin.service:
+        name: grafana-server
+        state: restarted
+        daemon_reload: true
+        enabled: true

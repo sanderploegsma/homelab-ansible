@@ -1,5 +1,9 @@
 [all]
 plex ansible_host=plex.home ansible_user=sander
+grafana ansible_host=grafana.lab.home ansible_user=root
+prometheus ansible_host=prometheus.lab.home ansible_user=root
 
 [node_exporter]
 plex
+grafana
+prometheus
