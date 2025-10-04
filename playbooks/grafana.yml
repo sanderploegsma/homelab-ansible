@@ -60,6 +60,18 @@
               url: http://{{ hostvars['prometheus']['ansible_host'] }}:9090
               isDefault: true
               editable: false
+            - name: InfluxDB
+              type: influxdb
+              access: proxy
+              url: http://{{ hostvars['influxdb']['ansible_host'] }}:8086
+              jsonData:
+                version: Flux
+                organization: home
+                defaultBucket: homelab
+              secureJsonData:
+                token: {{ influxdb_grafana_token | mandatory }}
+              isDefault: false
+              editable: false
         dest: /etc/grafana/provisioning/datasources/ansible-managed.yaml
         mode: "0644"
         owner: grafana
