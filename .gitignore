@@ -1,5 +1,6 @@
 .venv/
 .vscode/
 
-private/
-.vault-password
+.gitsecret/keys/random_seed
+!*.secret
+group_vars/all/secrets.yml

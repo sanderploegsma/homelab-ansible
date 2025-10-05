@@ -30,9 +30,13 @@
           plugins = /var/lib/grafana/plugins
           provisioning = /etc/grafana/provisioning
 
+          [security]
+          admin_user = {{ grafana_admin_user | mandatory }}
+          admin_password = "{{ grafana_admin_password | mandatory }}"
+
           [auth.anonymous]
           enabled = true
-          org_role = Admin
+          org_role = Viewer
           org_name = Main Org.
 
           [server]

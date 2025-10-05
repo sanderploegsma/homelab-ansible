@@ -1,0 +1,10 @@
+#!/bin/sh
+
+if command -v git-secret 2> /dev/null; then
+	git secret hide -m
+	git add *.secret
+	git add .gitsecret/path/mapping.cfg
+else
+	echo "Please install git-secret from https://git-secret.io"
+	exit 1
+fi
