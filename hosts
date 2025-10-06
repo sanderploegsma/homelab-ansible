@@ -1,11 +1,19 @@
 [all]
-plex ansible_host=plex.home ansible_user=sander
 grafana ansible_host=grafana.lab.home ansible_user=root
+influxdb ansible_host=influxdb.lab.home ansible_user=root
+plex ansible_host=plex.home ansible_user=sander
 prometheus ansible_host=prometheus.lab.home ansible_user=root
 tower ansible_host=tower.home ansible_user=root
-influxdb ansible_host=influxdb.lab.home ansible_user=root
 
-[node_exporter]
-plex
+[node_exporter_scrape_targets]
 grafana
+influxdb
+plex
+prometheus
+tower
+
+[node_exporter_install_targets]
+grafana
+influxdb
+plex
 prometheus
